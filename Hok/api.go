@@ -24,15 +24,6 @@ var (
 
 func init() {
 	ReadCacheFile()
-	/*
-	 Login to get AccessToken
-	 如果你沒有帳號, 請到 https://91m.top/login 註冊
-	 ## 登入請使用Email和密碼
-	*/
-	//Examples:
-	Md5 := Md5PassWord(PassWord)
-	ApiLogin("YourEmailPassword", Md5)
-	GetAllheroInfos()
 }
 
 func ReadCacheFile() {

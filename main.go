@@ -9,6 +9,7 @@ import (
 	"hokAPi/Hok"
 	"hokAPi/commands"
 	"hokAPi/commands/handlers"
+	"hokAPi/config"
 	"log"
 	"time"
 )
@@ -18,8 +19,23 @@ var (
 )
 
 func main() {
-	Hok.Email = "Your Email"
-	Hok.PassWord = "Your Password"
+	Config := config.ReadConfig()
+	//	fmt.Println(Config)
+	if Config.Email != "" && Config.Password != "" && Config.Token != "" {
+		/*
+		 Login to get AccessToken
+		 如果你沒有帳號, 請到 https://91m.top/login 註冊
+		 ## 登入請使用Email和密碼
+		*/
+		//Examples:
+		Hok.Email = Config.Email
+		Hok.PassWord = Config.Password
+		Token = Config.Token
+		Md5 := Hok.Md5PassWord(Hok.PassWord)
+		Hok.ApiLogin(Hok.Email, Md5)
+		Hok.GetAllheroInfos()
+	}
+
 	s := state.New("Bot " + Token)
 	r := cmdroute.NewRouter()
 	r.Use(cmdroute.Deferrable(s, cmdroute.DeferOpts{

@@ -5,10 +5,10 @@
 # 這是一個 Discord Bot，用來查詢王者榮耀的資訊
 
 # 使用方法
-- 到main.go 裡面填入你的 Bot Token 
-- 到main.go 裡面填入你在上述網站中註冊的帳號和密碼
+- 首次運行: go run main.go 
+- 到config.json 裡面填入你在上述網站中註冊的帳號和密碼 以及Discord Bot Token
 - 如未有帳號, 請到 https://91m.top/login 註冊
-- 開始使用
+- 開始使用 Discord Bot
 
 # 指令
 - /check: {name} 輸入英雄名字或暱稱，查詢英雄資訊
