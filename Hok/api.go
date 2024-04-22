@@ -134,3 +134,17 @@ func GetFromCname(name string) (Name string, ONames []string) {
 	//fmt.Println("Not Found ", name)
 	return "", nil
 }
+
+func GetFromCNameMap(name string) map[string][]string {
+	M := map[string][]string{}
+	for k, s := range CNameMap {
+		//	fmt.Println(k)
+		sp := strings.Split(s, "|")
+		for _, s2 := range sp {
+			if strings.Contains(s2, strings.ToLower(name)) {
+				M[k] = sp
+			}
+		}
+	}
+	return M
+}
