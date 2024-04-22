@@ -3,14 +3,18 @@ package main
 import (
 	"context"
 	"fmt"
+	"github.com/diamondburned/arikawa/v3/api"
 	"github.com/diamondburned/arikawa/v3/api/cmdroute"
+	"github.com/diamondburned/arikawa/v3/discord"
 	"github.com/diamondburned/arikawa/v3/gateway"
 	"github.com/diamondburned/arikawa/v3/state"
+	"github.com/liuzl/gocc"
 	"hokAPi/Hok"
 	"hokAPi/commands"
 	"hokAPi/commands/handlers"
 	"hokAPi/config"
 	"log"
+	"strings"
 	"time"
 )
 
@@ -47,6 +51,46 @@ func main() {
 		fmt.Println(c.User.Username + "#" + c.User.Discriminator)
 		if err := overwriteCommands(s); err != nil {
 			fmt.Println(err)
+		}
+	})
+	s.AddHandler(func(e *gateway.InteractionCreateEvent) {
+		var resp api.InteractionResponse
+		switch d := e.Data.(type) {
+		case *discord.CommandInteraction:
+		case *discord.AutocompleteInteraction:
+			allChoices := api.AutocompleteStringChoices{}
+			switch d.Name {
+			case "check":
+				o := strings.ReplaceAll(d.Options.Find("name").String(), `"`, "")
+				//	fmt.Println(o)
+				if Name, _ := Hok.GetFromCname(o); Name != "" {
+					if len(allChoices) <= 25 {
+						s2t, err := gocc.New("s2t")
+						if err != nil {
+							fmt.Println(err)
+						}
+
+						out, err := s2t.Convert(Name)
+						if err != nil {
+							fmt.Println(err)
+						}
+						allChoices = append(allChoices, discord.StringChoice{
+							Name:  fmt.Sprintf("搜尋:%v", out),
+							Value: fmt.Sprintf("%v", Name),
+						})
+					}
+					resp = api.InteractionResponse{
+						Type: api.AutocompleteResult,
+						Data: &api.InteractionResponseData{
+							Choices: &allChoices,
+						},
+					}
+
+					if err := s.RespondInteraction(e.ID, e.Token, resp); err != nil {
+						log.Println("failed to send interaction callback:", err)
+					}
+				}
+			}
 		}
 	})
 	r.AddFunc("check", handlers.CheckHero)
